@@ -1,0 +1,24 @@
+# Generated runtime outputs
+churnguard.db
+churnguard_output/
+
+# Old notebook
+CustomerChurnPreventer.ipynb
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+venv/
+.venv/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# API keys (just in case)
+*.env
+secrets.py
