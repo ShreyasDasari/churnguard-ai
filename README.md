@@ -81,6 +81,240 @@ Set `source="stripe"`, `"posthog"`, or `"hubspot"` in Cell 1.6, or provide CSV p
 
 ---
 
+## How Stripe Data Maps to ChurnGuard
+
+ChurnGuard's Stripe connector reads two types of Stripe objects -- Subscriptions and Invoices -- and transforms them into the four-file CSV schema ChurnGuard uses internally. The connector is read-only: it never writes to your Stripe account, never triggers a charge, and never modifies a subscription. If you prefer not to use an API key at all, every piece of data the connector reads is also available as a manual CSV export from your Stripe Dashboard under **Billing > Subscriptions** and **Billing > Invoices**.
+
+---
+
+### What a Stripe Subscription looks like
+
+```json
+{
+  "id": "sub_1OqKL2...",
+  "status": "canceled",
+  "created": 1704067200,
+  "canceled_at": 1706745600,
+  "cancellation_details": {
+    "feedback": "too_expensive",
+    "comment": "Found a cheaper alternative"
+  },
+  "items": {
+    "data": [{
+      "price": {
+        "unit_amount": 29900,
+        "recurring": { "interval": "month" }
+      },
+      "quantity": 3
+    }]
+  },
+  "customer": {
+    "id": "cus_9s6XK...",
+    "email": "john@acmecorp.com",
+    "created": 1698796800
+  }
+}
+```
+
+> **Note on pricing math:** `unit_amount` is always stored in cents, so 29900 = $299.00. For seat-based pricing, ChurnGuard multiplies `unit_amount` by `quantity` -- in this example, 3 seats at $299 = $897/month MRR. For annual plans billed upfront, ChurnGuard divides the total by 12 to arrive at a monthly equivalent for consistent MRR comparison.
+
+---
+
+### Subscription fields to customers.csv
+
+| Stripe Field | customers.csv Column | How It's Transformed |
+|---|---|---|
+| `customer.id` | `customer_id` | Used directly as the unique identifier |
+| `customer.created` | `signup_date` | Unix timestamp converted to YYYY-MM-DD |
+| `items.data[0].price.unit_amount` | `monthly_revenue` | Divided by 100 (cents to dollars). Annual plans divided by 12 |
+| `items.data[0].quantity` | multiplier | Multiplied by unit_amount for seat-based pricing |
+| `status == "canceled"` | `is_churned` | True if canceled, False for all other statuses |
+| `canceled_at` | `churn_date` | Unix timestamp to date. Null if customer is still active |
+| `cancellation_details.feedback` | `churn_reason` | Direct string: too_expensive, missing_features, switched_service, unused |
+| `items.data[0].price.recurring.interval` | `contract_type` | "month" to "monthly", "year" to "annual" |
+
+To enable `cancellation_details.feedback`, turn on Stripe Cancellation Surveys in your Dashboard under **Billing > Subscriptions > Cancellation surveys**. ChurnGuard reads this field automatically once it is active.
+
+---
+
+### What a Stripe Invoice looks like
+
+```json
+{
+  "id": "in_1OqKL2...",
+  "customer": "cus_9s6XK...",
+  "created": 1704067200,
+  "amount_paid": 8970,
+  "status": "open",
+  "attempt_count": 3,
+  "paid": false
+}
+```
+
+> **Note on failed payments:** `attempt_count > 1` combined with `paid: false` is how ChurnGuard identifies a failed payment. Stripe retries failed payments automatically on a schedule you configure -- so `attempt_count: 3` means Stripe has already tried and failed three times without success. By the time ChurnGuard sees this, the customer is already behind on payment and your window to recover them is narrowing. This is treated as a critical churn signal.
+
+---
+
+### Invoice fields to payment_history.csv
+
+| Stripe Field | payment_history.csv Column | How It's Transformed |
+|---|---|---|
+| `customer` | `customer_id` | Direct |
+| `created` | `payment_date` | Unix timestamp converted to YYYY-MM-DD |
+| `amount_paid` | `amount` | Divided by 100 (cents to dollars) |
+| `paid == true` | `payment_status` | "success" |
+| `paid == false AND attempt_count > 1` | `payment_status` | "failed" |
+| `status == "void"` | `payment_status` | "refunded" |
+| `status == "uncollectible"` | `payment_status` | "disputed" |
+
+---
+
+### Don't use Stripe? No problem.
+
+The Universal CSV Schema is deliberately designed to be the lowest common denominator across every billing tool on the market. Paddle, Chargebee, Lemon Squeezy, and even a manually maintained spreadsheet all store the same underlying information -- the column names just differ. Export your data from whichever tool you use, rename the columns to match the schema in the [Universal CSV Schema](#universal-csv-schema) section below, and drop the files into your ChurnGuard project folder. Set `source="csv"` in Cell 1.6 and provide the file paths -- that is the entire setup.
+
+---
+
+## Understanding Your Churn Signals
+
+ChurnGuard does not produce a single "churn score" in isolation. It combines eight signals that each predict cancellation in a different way and with a different lead time. This section explains what each signal is in plain English, when it is in the danger zone, and exactly what to do when it fires.
+
+---
+
+### Leading vs. Lagging: Why It Matters
+
+There are two types of churn signals. **Lagging indicators** tell you a customer has already churned or is about to cancel this week. By the time you see a lagging signal, your intervention window is essentially closed. **Leading indicators** warn you 30-90 days before cancellation -- when a conversation, a discount, or a product walkthrough can still change the outcome.
+
+ChurnGuard focuses on leading indicators. The goal is not to detect churn after it happens. The goal is to give your team enough advance warning to prevent it.
+
+| Leading Indicators (30-90 day warning) | Lagging Indicators (too late or barely in time) |
+|---|---|
+| Usage trend declining | Cancellation request received |
+| Days since last active increasing | Failed payment on 3rd attempt |
+| Feature adoption stalling | Downgrade already processed |
+| Support ticket spike | NPS score of 0 received |
+| Seat utilization dropping | Customer stopped responding to emails |
+
+**ChurnGuard scores customers primarily on leading indicators. Lagging signals are included as context but should trigger escalation, not standard outreach.**
+
+---
+
+### The 8 Churn Signals
+
+#### Signal 1: Usage Trend -- 35% of the prediction
+
+**What it is:** Is this customer using your product more or less compared to last month? ChurnGuard compares login and activity counts between the current 30-day period and the previous 30-day period.
+
+**Why it matters:** A customer who was active 15 times a month and is now active 3 times has mentally already decided to leave -- they just haven't canceled yet. This signal predicts cancellation 60-90 days before it happens, which is your entire window to intervene.
+
+**Danger zone:** Usage dropped more than 30% month-over-month.
+
+**What you do:** Do not wait for them to contact you. Assign a CS rep to schedule a 20-minute call this week. The agenda: understand what changed, not pitch new features.
+
+---
+
+#### Signal 2: Days Since Last Active -- 25% of the prediction
+
+**What it is:** How many days has it been since anyone at this company opened your product?
+
+**Why it matters:** Silence is the quietest form of churn. Customers who go dark rarely come back without someone reaching out first. Two weeks of inactivity in a product they pay for monthly is abnormal behavior.
+
+**Danger zone:** More than 14 consecutive days without a single login.
+
+**What you do:** Send a personal email from a real person (not a no-reply address) within 24 hours of hitting the 14-day mark. Subject line: "Is everything okay with [Product]?" -- not a marketing email.
+
+---
+
+#### Signal 3: Payment Failures -- 20% of the prediction
+
+**What it is:** Has this customer had a credit card failure, declined payment, or billing error in the last 90 days?
+
+**Why it matters:** 20-40% of all SaaS churn is involuntary -- the customer never intended to cancel, their card simply failed and nobody followed up. This is the highest return-on-effort signal in the entire model because sending one email with a payment update link recovers the majority of these customers.
+
+**Danger zone:** Any failed payment. Two failed payments in 90 days is critical.
+
+**What you do:** Automated email with a payment update link within 24 hours of the first failure. Personal phone call or direct message on the second failure -- do not rely on automation alone at this point.
+
+---
+
+#### Signal 4: Feature Adoption Breadth -- 15% of the prediction
+
+**What it is:** How many of your product's core features has this customer actually used since they signed up?
+
+**Why it matters:** Customers who use only one feature are one competitor with a lower price away from leaving. Customers who have built workflows around 3 or more features have a high switching cost -- it takes real effort to replace something that is woven into how they work.
+
+**Danger zone:** Customer has used fewer than 2 core features after their first 60 days with your product.
+
+**What you do:** This is primarily an onboarding failure, not a churn signal. Trigger a personalized email or in-app message showing the specific features they have not tried yet, with a direct link to a 5-minute tutorial. If they are past 90 days, offer a live walkthrough.
+
+---
+
+#### Signal 5: Contract Type -- 10% of the prediction
+
+**What it is:** Is this customer paying month-to-month or on an annual contract?
+
+**Why it matters:** Monthly customers cancel at roughly double the rate of annual customers -- approximately 16% annual churn versus 8.5% for annual plans. This is not a behavioral signal, it is a structural risk factor. A month-to-month customer with any other warning sign is significantly more likely to act on it because there is no cancellation penalty and their next decision point is 30 days away.
+
+**Danger zone:** Month-to-month contract combined with any other signal above.
+
+**What you do:** During any retention conversation with a high-risk monthly customer, offer a 15-20% discount for switching to annual. Frame it as saving them money, not locking them in.
+
+---
+
+#### Signal 6: Support Ticket Spike -- 10% of the prediction
+
+**What it is:** Has this customer opened significantly more support tickets than usual in the last 30 days?
+
+**Why it matters:** A sudden spike in support tickets almost always means the customer is hitting a wall -- something broke, they cannot figure something out, or they are frustrated with a process. If those tickets take too long to resolve, frustration converts directly to a cancellation decision.
+
+**Danger zone:** 3 or more tickets in 30 days from a customer who previously averaged fewer than 1 per month, especially if CSAT scores on those tickets are below 3 out of 5.
+
+**What you do:** Escalate to a senior support engineer immediately. Do not let a frustrated customer wait in a standard queue. Consider a proactive "we noticed you've had a few issues -- can we jump on a call?" message before they ask for it.
+
+---
+
+#### Signal 7: Seat Utilization -- 5% of the prediction (team plans only)
+
+**What it is:** What percentage of the seats or licenses this customer is paying for are actually being used by real people?
+
+**Why it matters:** A company paying for 20 seats but using only 6 is paying for 14 seats they do not need. At renewal time, they will notice this. Low seat utilization is one of the strongest predictors of a downgrade or full cancellation at the next renewal date.
+
+**Danger zone:** Below 40% seat utilization with a renewal coming in the next 90 days.
+
+**What you do:** You have two options and you need to pick the right one. If there is a realistic path to activating more seats (new team members, new departments), help them do it. If there is not, proactively offer a right-sized plan before their renewal -- customers who feel respected during a downgrade conversation almost always stay. Customers who feel surprised by their own renewal invoice often do not.
+
+---
+
+#### Signal 8: MRR Decline or Recent Downgrade -- 5% of the prediction
+
+**What it is:** Has this customer reduced their plan, removed seats, or lowered their monthly spend in the last 60 days?
+
+**Why it matters:** A downgrade is a customer voting with their wallet before they vote with their cancellation button. It is almost always a leading signal of full churn -- they are testing whether they can get by with less of your product before they decide to leave entirely.
+
+**Danger zone:** Any downgrade in the last 60 days, particularly when combined with declining usage.
+
+**What you do:** Do not ignore a downgrade as a resolved event. Schedule a check-in within two weeks of the downgrade to understand the reason. Was it budget pressure, dissatisfaction, or a change in their business? The answer determines whether this is recoverable and how.
+
+---
+
+### Which signals matter most for your type of business
+
+**If your product is used every day** (project management, team communication, analytics dashboards): Usage trend and days-since-last-active are your most critical signals. A 7-day gap in a daily-use tool is an emergency that warrants immediate outreach, not a weekly digest flag.
+
+**If your product is used periodically** (quarterly reporting, annual compliance, event-driven tools): Do not panic about low login frequency between events -- that is expected behavior. Focus on payment health, feature adoption, and support ticket velocity instead. A customer who logs in twice a year but has never had a support issue and renews on time is healthy.
+
+**If you serve enterprise or large team accounts:** Seat utilization and MRR trend are disproportionately important because one enterprise account churning may represent more revenue than 50 SMB accounts combined. Use the `revenue_weighted_priority` column in ChurnGuard's output -- it automatically surfaces large accounts with moderate risk above small accounts with high risk.
+
+**If your average contract value is under $100/month:** Payment failures are your single highest-ROI signal to act on. At this price point customers are more likely to let a failed payment slide rather than proactively update their billing information. An automated dunning sequence triggered within 24 hours of a failure can recover 30-50% of these customers before they realize their subscription lapsed.
+
+---
+
+### A note on weights -- and when to override them
+
+The percentages next to each signal represent the average predictive weight across thousands of SaaS companies. They are defaults, not mandates. A founder who knows their product deeply may recognize that a specific signal matters much more or less in their context -- a developer tool used once a week by design will behave very differently from a daily CRM. ChurnGuard's model will learn these nuances over time as outcome data is recorded using the `record_intervention_outcome()` function in Section 8 of the notebook -- the more saved vs. churned outcomes you log, the more the predictions tune to your specific business and customer base.
+
+---
+
 ## Universal CSV Schema
 
 Place your exports in the project folder using these exact column names.
