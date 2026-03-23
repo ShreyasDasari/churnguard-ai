@@ -20,8 +20,13 @@ if (typeof window !== 'undefined' && !window.__POSTHOG_INITIALIZED__) {
     capture_pageview: true,
     capture_pageleave: true,
     autocapture: true,
+    loaded: (posthogInstance) => {
+      // Expose posthog on window for debugging
+      window.posthog = posthogInstance;
+    }
   });
   window.__POSTHOG_INITIALIZED__ = true;
+  window.posthog = posthog;
 }
 
 // Track custom event helper

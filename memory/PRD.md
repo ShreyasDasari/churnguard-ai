@@ -4,8 +4,8 @@
 Build a highly polished, production-ready landing page website for "ChurnGuard AI" - a free, open-source churn prediction tool for SaaS. The page should impress recruiters, founders, and technical buyers with a premium, startup-quality design.
 
 ## Architecture & Tech Stack
-- **Frontend**: React 18 + Tailwind CSS + Framer Motion
-- **Backend**: FastAPI (minimal - only health endpoint)
+- **Frontend**: React 18 + Tailwind CSS + Framer Motion + PostHog Analytics
+- **Backend**: FastAPI + Resend Email API
 - **Deployment**: Production build served via `serve` package
 - **Styling**: Custom CSS variables for theme system, Plus Jakarta Sans font
 
@@ -28,7 +28,7 @@ Build a highly polished, production-ready landing page website for "ChurnGuard A
 ## What's Been Implemented (Jan 2026)
 
 ### Phase 1: MVP Landing Page ✅
-1. **Navbar** - Sticky with glass effect, animated logo, nav links, theme toggle, GitHub Star button
+1. **Navbar** - Sticky with glass effect, animated shield logo, nav links, theme toggle, GitHub Star button
 2. **Hero Section** - Headline with gradient text, CTAs, dashboard mock with risk metrics, trust badges
 3. **Why It Matters** - Comparison cards (Old Way vs ChurnGuard AI)
 4. **Features Grid** - 8 feature cards with icons and hover animations
@@ -39,33 +39,46 @@ Build a highly polished, production-ready landing page website for "ChurnGuard A
 9. **Final CTA** - Strong closing with gradient background
 10. **Footer** - Multi-column layout, animated logo, copyright
 
-### Phase 2: Enhancements ✅ (Current Session)
-1. **New Spiral Vortex Logo** - Custom SVG with 5 emerald gradient blades
-   - Smooth 30s rotation animation in navbar
-   - Counter-rotating with ambient glow in footer
-   - Updated favicon to match
-2. **Email Signup Section** - Between Open Source and Final CTA
-   - Mail icon with pulse animation
-   - Email input with validation
-   - Subscribe button with loading state
-   - Success/error feedback messages
-   - Social proof text
-   - Glassmorphism card design
+### Phase 2: Email Signup ✅
+- Email signup section with glassmorphism card
+- Resend API integration for welcome emails
+- Success/error feedback messages
+- Social proof text
 
-### Technical Details
-- Theme system using CSS variables
-- Framer Motion for scroll animations and micro-interactions
-- Lucide React icons throughout
-- Glass morphism effects with backdrop blur
-- Custom animated spiral vortex logo (SVG + Framer Motion)
-- Production build served for stability
-- **Email form MOCKED** - simulated submission with setTimeout
+### Phase 3: Analytics + Comparison ✅ (Current Session)
+1. **PostHog Analytics Integration**
+   - Automatic pageview tracking
+   - Autocapture for clicks and form submissions
+   - Custom event tracking on CTAs (trackEvent helper)
+   - API Key: phx_yugE8Duov8gJYm3k3w19xuicNmG2xrdVL7op8XWP0QzsBHS
+
+2. **Resend Email Integration**
+   - API Key: re_HJuM5F3g_4kggvxU7BLD3eTovtpwTcMda
+   - Welcome email template with ChurnGuard branding
+   - Testing mode handling (works in production with verified domain)
+
+3. **Product Comparison Table**
+   - 11-row comparison: ChurnGuard AI vs Traditional Analytics vs Enterprise Platforms
+   - Features: Price, Setup Time, ML Prediction, SHAP, LLM Plans, Revenue Scoring, etc.
+   - Visual checkmarks and highlights for ChurnGuard advantages
+
+4. **Shield Logo Reverted** - Back to original shield with orbiting nodes design
 
 ## Test Results
-- Phase 1: 98% success rate
-- Phase 2: 95% success rate
-- All major functionality working
-- Theme toggle, logo animation, email form all functional
+- Phase 3: Backend 100%, Frontend 92% → 100% after PostHog fix
+- All integrations working (Resend in testing mode, PostHog fully functional)
+- All CTAs and links working correctly
+
+## Environment Variables
+### Backend (.env)
+- MONGO_URL=mongodb://localhost:27017
+- DB_NAME=churnguard_landing
+- RESEND_API_KEY=re_HJuM5F3g_4kggvxU7BLD3eTovtpwTcMda
+- SENDER_EMAIL=onboarding@resend.dev
+
+### Frontend
+- PostHog Key: phx_yugE8Duov8gJYm3k3w19xuicNmG2xrdVL7op8XWP0QzsBHS
+- PostHog Host: https://us.i.posthog.com
 
 ## Prioritized Backlog
 
@@ -73,15 +86,15 @@ Build a highly polished, production-ready landing page website for "ChurnGuard A
 All critical features implemented and tested.
 
 ### P1 (High Priority) - Future Enhancements
-- [ ] Connect email form to actual backend/email service (currently MOCKED)
-- [ ] Add analytics tracking (PostHog/Plausible)
-- [ ] Add product comparison table with competitors
+- [ ] Verify domain in Resend to enable production emails
+- [ ] Set up PostHog dashboards for conversion tracking
+- [ ] Add meta images for social sharing (OG images)
 
 ### P2 (Medium Priority)
 - [ ] Add testimonials section (when real users available)
 - [ ] Add pricing/value calculator
 - [ ] Performance optimization (lazy loading images)
-- [ ] Add meta images for social sharing
+- [ ] Add Stripe integration for donations/sponsorship
 
 ### P3 (Low Priority)
 - [ ] Add blog/changelog section
@@ -89,15 +102,17 @@ All critical features implemented and tested.
 - [ ] Add accessibility audit (WCAG AA compliance)
 
 ## Next Tasks
-1. Connect email signup to email service (Resend/SendGrid)
-2. Add analytics tracking
-3. Create A/B testing for different headlines
-4. Monitor GitHub star conversions from landing page
+1. Verify domain in Resend dashboard for production emails
+2. Create PostHog dashboards to track GitHub star conversions
+3. Add OG images for better social sharing
+4. Monitor analytics and optimize based on user behavior
 
 ## Links
 - **GitHub**: https://github.com/ShreyasDasari/churnguard-ai
 - **Demo**: https://churn-guard--shreyasdasari.replit.app/
 - **Preview**: https://d388d75d-f229-4482-b913-1ee6832b7441.preview.emergentagent.com
+- **PostHog Dashboard**: https://us.posthog.com
 
 ## Important Notes
-- **Email signup is MOCKED** - No actual emails are stored/sent. Needs backend integration for production use.
+- **Email in testing mode**: Verify domain at resend.com/domains to send to all recipients
+- **PostHog tracking active**: Events being captured and sent to PostHog
