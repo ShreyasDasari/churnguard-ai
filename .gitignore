@@ -20,3 +20,7 @@ venv/
 
 # API keys (just in case)
 secrets.py
+-e 
+# Environment files
+*.env
+*.env.*
