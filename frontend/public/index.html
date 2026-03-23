@@ -16,6 +16,15 @@
     <meta name="twitter:description" content="Free, open-source churn prediction for SaaS." />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <title>ChurnGuard AI - Predict Churn Before It Happens</title>
+    <script>
+      // Suppress HMR overlay errors in development
+      window.addEventListener('error', function(e) {
+        if (e.message && e.message.includes('HMR')) {
+          e.stopImmediatePropagation();
+          return true;
+        }
+      }, true);
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
