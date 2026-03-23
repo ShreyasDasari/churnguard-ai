@@ -9,7 +9,6 @@ CustomerChurnPreventer.ipynb
 __pycache__/
 *.py[cod]
 *.pyo
-.env
 venv/
 .venv/
 
@@ -20,5 +19,4 @@ venv/
 .DS_Store
 
 # API keys (just in case)
-*.env
 secrets.py
