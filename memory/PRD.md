@@ -27,7 +27,7 @@ Build a highly polished, production-ready landing page website for "ChurnGuard A
 
 ## What's Been Implemented (Jan 2026)
 
-### Completed Features
+### Phase 1: MVP Landing Page ✅
 1. **Navbar** - Sticky with glass effect, animated logo, nav links, theme toggle, GitHub Star button
 2. **Hero Section** - Headline with gradient text, CTAs, dashboard mock with risk metrics, trust badges
 3. **Why It Matters** - Comparison cards (Old Way vs ChurnGuard AI)
@@ -39,20 +39,33 @@ Build a highly polished, production-ready landing page website for "ChurnGuard A
 9. **Final CTA** - Strong closing with gradient background
 10. **Footer** - Multi-column layout, animated logo, copyright
 
+### Phase 2: Enhancements ✅ (Current Session)
+1. **New Spiral Vortex Logo** - Custom SVG with 5 emerald gradient blades
+   - Smooth 30s rotation animation in navbar
+   - Counter-rotating with ambient glow in footer
+   - Updated favicon to match
+2. **Email Signup Section** - Between Open Source and Final CTA
+   - Mail icon with pulse animation
+   - Email input with validation
+   - Subscribe button with loading state
+   - Success/error feedback messages
+   - Social proof text
+   - Glassmorphism card design
+
 ### Technical Details
 - Theme system using CSS variables
 - Framer Motion for scroll animations and micro-interactions
 - Lucide React icons throughout
 - Glass morphism effects with backdrop blur
-- Custom animated logo (shield with orbiting nodes)
+- Custom animated spiral vortex logo (SVG + Framer Motion)
 - Production build served for stability
+- **Email form MOCKED** - simulated submission with setTimeout
 
 ## Test Results
-- Frontend: 98% success rate
+- Phase 1: 98% success rate
+- Phase 2: 95% success rate
 - All major functionality working
-- Theme toggle works correctly
-- All links functional
-- Mobile responsive verified
+- Theme toggle, logo animation, email form all functional
 
 ## Prioritized Backlog
 
@@ -60,15 +73,15 @@ Build a highly polished, production-ready landing page website for "ChurnGuard A
 All critical features implemented and tested.
 
 ### P1 (High Priority) - Future Enhancements
+- [ ] Connect email form to actual backend/email service (currently MOCKED)
 - [ ] Add analytics tracking (PostHog/Plausible)
-- [ ] Add email signup form for launch notifications
-- [ ] Create separate "Why It Matters" pain points section (currently minimal)
+- [ ] Add product comparison table with competitors
 
 ### P2 (Medium Priority)
 - [ ] Add testimonials section (when real users available)
-- [ ] Add comparison table with competitors
 - [ ] Add pricing/value calculator
 - [ ] Performance optimization (lazy loading images)
+- [ ] Add meta images for social sharing
 
 ### P3 (Low Priority)
 - [ ] Add blog/changelog section
@@ -76,8 +89,8 @@ All critical features implemented and tested.
 - [ ] Add accessibility audit (WCAG AA compliance)
 
 ## Next Tasks
-1. Consider adding email capture for product launch
-2. Add analytics to track visitor behavior
+1. Connect email signup to email service (Resend/SendGrid)
+2. Add analytics tracking
 3. Create A/B testing for different headlines
 4. Monitor GitHub star conversions from landing page
 
@@ -85,3 +98,6 @@ All critical features implemented and tested.
 - **GitHub**: https://github.com/ShreyasDasari/churnguard-ai
 - **Demo**: https://churn-guard--shreyasdasari.replit.app/
 - **Preview**: https://d388d75d-f229-4482-b913-1ee6832b7441.preview.emergentagent.com
+
+## Important Notes
+- **Email signup is MOCKED** - No actual emails are stored/sent. Needs backend integration for production use.
