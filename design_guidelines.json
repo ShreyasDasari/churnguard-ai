@@ -1,0 +1,152 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "ChurnGuard AI",
+      "tone": "Intelligent, Protective, Technical, Premium",
+      "metaphor": "The Shield in the Data",
+      "visual_style": "Dark Mode Emerald Glassmorphism"
+    },
+    "typography": {
+      "font_family": {
+        "heading": "\"Plus Jakarta Sans\", sans-serif",
+        "body": "\"Plus Jakarta Sans\", sans-serif",
+        "mono": "\"JetBrains Mono\", monospace"
+      },
+      "scale": {
+        "h1": "text-5xl md:text-7xl font-bold tracking-tight",
+        "h2": "text-3xl md:text-5xl font-semibold tracking-tight",
+        "h3": "text-2xl md:text-3xl font-medium",
+        "body_lg": "text-lg md:text-xl text-slate-400 leading-relaxed",
+        "body": "text-base text-slate-400 leading-relaxed",
+        "caption": "text-sm text-slate-500 uppercase tracking-widest"
+      }
+    },
+    "colors": {
+      "palette": {
+        "background": "#020817",
+        "surface": "#0F172A",
+        "surface_highlight": "#1E293B",
+        "primary": "#10B981",
+        "primary_foreground": "#FFFFFF",
+        "secondary": "#0F766E",
+        "accent": "#2DD4BF",
+        "muted": "#334155",
+        "border": "#1E293B",
+        "ring": "#10B981"
+      },
+      "gradients": {
+        "hero_glow": "bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-cyan-500/20 blur-3xl",
+        "text_gradient": "bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400",
+        "card_border": "bg-gradient-to-b from-white/10 to-white/0",
+        "button_gradient": "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500"
+      }
+    },
+    "spacing": {
+      "container": "container mx-auto px-4 md:px-6 lg:px-8",
+      "section_padding": "py-24 md:py-32",
+      "element_gap": "gap-4 md:gap-8"
+    },
+    "components": {
+      "buttons": {
+        "primary": "rounded-full px-8 py-6 text-lg font-semibold shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all duration-300",
+        "secondary": "rounded-full px-8 py-6 text-lg font-medium border border-slate-700 hover:bg-slate-800 transition-all"
+      },
+      "cards": {
+        "glass": "bg-slate-950/50 backdrop-blur-xl border border-white/10 hover:border-emerald-500/30 transition-colors duration-300 rounded-2xl p-8"
+      },
+      "inputs": {
+        "default": "bg-slate-950/50 border-slate-800 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-lg"
+      }
+    },
+    "layout_strategies": {
+      "hero": "Split layout: Left (Copy + CTA) | Right (Interactive Visualization/Mockup). Background: Animated gradient mesh or 'Orbital' constellation SVG.",
+      "features": "Bento Grid: Mixed span cards (col-span-1, col-span-2) to create visual rhythm. Use icons + short text.",
+      "timeline": "Vertical connection line with pulsing nodes for 'How it Works' steps.",
+      "comparison": "Interactive tabs or slider comparing 'Black Box AI' vs 'ChurnGuard Explainable AI'."
+    },
+    "motion": {
+      "library": "framer-motion",
+      "strategies": {
+        "page_load": "Staggered fade-up for all hero elements.",
+        "scroll": "Reveal sections with opacity + y-translation (useInView).",
+        "hover": "Scale 1.02 + Glow intensity increase.",
+        "micro": "Icon pulses, border drawing effects on cards."
+      }
+    },
+    "assets": {
+      "icons": "Lucide React (Shield, Activity, Network, Lock, Zap, GitBranch, Users, Search)",
+      "images": {
+        "hero_bg": "https://images.pexels.com/photos/17483870/pexels-photo-17483870.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "dashboard_mock": "CSS-only Glassmorphic representation PREFERRED over screenshot. Create a container with a sidebar, header, and 2-3 dummy charts using Recharts.",
+        "open_source_bg": "https://images.pexels.com/photos/5474028/pexels-photo-5474028.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+      }
+    }
+  },
+  "implementation_steps": [
+    {
+      "step": 1,
+      "description": "Initialize React + Vite + Tailwind project structure.",
+      "action": "scaffold"
+    },
+    {
+      "step": 2,
+      "description": "Install dependencies: framer-motion, lucide-react, clsx, tailwind-merge, recharts.",
+      "action": "install"
+    },
+    {
+      "step": 3,
+      "description": "Setup Tailwind Config (Fonts, Colors, Animations). Add 'Plus Jakarta Sans' via Google Fonts import in index.css.",
+      "action": "config"
+    },
+    {
+      "step": 4,
+      "description": "Create basic UI components (Button, Card, Badge) in /src/components/ui.",
+      "action": "components"
+    },
+    {
+      "step": 5,
+      "description": "Implement Navbar (Sticky, Blur, Theme Toggle, GitHub Star).",
+      "action": "layout"
+    },
+    {
+      "step": 6,
+      "description": "Build Hero Section with 'Orbital' visual and Gradient Glow.",
+      "action": "section"
+    },
+    {
+      "step": 7,
+      "description": "Build 'Why It Matters' & 'Features' (Bento Grid).",
+      "action": "section"
+    },
+    {
+      "step": 8,
+      "description": "Build 'How It Works' (Timeline) & 'Models' (Explainability Demo).",
+      "action": "section"
+    },
+    {
+      "step": 9,
+      "description": "Build 'Intervention Plans', 'Open Source', and Footer.",
+      "action": "section"
+    }
+  ],
+  "universal_guidelines": {
+    "do": [
+      "Use 'Emerald' (#10B981) for primary actions and 'Teal' (#14B8A6) for gradients.",
+      "Ensure all text has sufficient contrast against the dark background.",
+      "Use 'Glassmorphism' (backdrop-blur) for cards and sticky navs.",
+      "Animate elements on scroll entry.",
+      "Make the 'Star on GitHub' button prominent.",
+      "Mobile-First: Stack grids on mobile, expand on desktop."
+    ],
+    "dont": [
+      "Do NOT use purple or pink (stick to Emerald/Teal/Cyan).",
+      "Do NOT use generic stock photos of people shaking hands.",
+      "Do NOT clutter the UI - keep whitespace (negative space) generous.",
+      "Do NOT use default browser fonts - load Plus Jakarta Sans."
+    ]
+  },
+  "logo_concept": {
+    "description": "Orbital Constellation: A central shield icon (Emerald) surrounded by 3 orbiting nodes (Cyan, Teal, White) connected by thin lines. Use CSS animation to rotate the orbits.",
+    "implementation": "Combine Lucide 'Shield' icon with absolute positioned 'div' dots rotating along a border-radius track."
+  }
+}
