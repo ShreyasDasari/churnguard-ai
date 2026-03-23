@@ -1,0 +1,88 @@
+{
+  "summary": {
+    "tests_run": 4,
+    "tests_passed": 4,
+    "success_rate": 100.0
+  },
+  "detailed_results": [
+    {
+      "test_name": "Health Check",
+      "method": "GET",
+      "endpoint": "api/health",
+      "expected_status": 200,
+      "actual_status": 200,
+      "success": true,
+      "response_time": 0.242408,
+      "timestamp": "2026-03-23T21:00:23.527903",
+      "response_data": {
+        "status": "healthy",
+        "service": "ChurnGuard AI Landing"
+      }
+    },
+    {
+      "test_name": "Email Subscription - Valid Email",
+      "method": "POST",
+      "endpoint": "api/subscribe",
+      "expected_status": 200,
+      "actual_status": 200,
+      "success": true,
+      "response_time": 0.348846,
+      "timestamp": "2026-03-23T21:00:23.878096",
+      "response_data": {
+        "status": "success",
+        "message": "Subscribed successfully! You'll receive updates once we verify our domain.",
+        "note": "Email service in testing mode"
+      }
+    },
+    {
+      "test_name": "Email Subscription - Invalid Email",
+      "method": "POST",
+      "endpoint": "api/subscribe",
+      "expected_status": 422,
+      "actual_status": 422,
+      "success": true,
+      "response_time": 0.198886,
+      "timestamp": "2026-03-23T21:00:24.078283",
+      "response_data": {
+        "detail": [
+          {
+            "type": "value_error",
+            "loc": [
+              "body",
+              "email"
+            ],
+            "msg": "value is not a valid email address: An email address must have an @-sign.",
+            "input": "invalid-email",
+            "ctx": {
+              "reason": "An email address must have an @-sign."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "test_name": "Email Subscription - Missing Email",
+      "method": "POST",
+      "endpoint": "api/subscribe",
+      "expected_status": 422,
+      "actual_status": 422,
+      "success": true,
+      "response_time": 0.126976,
+      "timestamp": "2026-03-23T21:00:24.206597",
+      "response_data": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "email"
+            ],
+            "msg": "Field required",
+            "input": {},
+            "url": "https://errors.pydantic.dev/2.12/v/missing"
+          }
+        ]
+      }
+    }
+  ]
+}

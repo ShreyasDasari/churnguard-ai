@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import posthog from 'posthog-js';
 import { 
   Shield, Activity, Database, Zap, GitBranch, Users, Search, 
   BarChart3, Target, Brain, Lightbulb, Clock, Star, ExternalLink,
@@ -8,71 +9,32 @@ import {
   Layers, LineChart, Sparkles, Github, Mail, Send
 } from 'lucide-react';
 
+// Initialize PostHog
+const POSTHOG_KEY = 'phx_yugE8Duov8gJYm3k3w19xuicNmG2xrdVL7op8XWP0QzsBHS';
+const POSTHOG_HOST = 'https://us.i.posthog.com';
+
+if (typeof window !== 'undefined' && !window.__POSTHOG_INITIALIZED__) {
+  posthog.init(POSTHOG_KEY, {
+    api_host: POSTHOG_HOST,
+    person_profiles: 'identified_only',
+    capture_pageview: true,
+    capture_pageleave: true,
+    autocapture: true,
+  });
+  window.__POSTHOG_INITIALIZED__ = true;
+}
+
+// Track custom event helper
+const trackEvent = (eventName, properties = {}) => {
+  if (posthog) {
+    posthog.capture(eventName, properties);
+  }
+};
+
 // Utility function for classnames
 const cn = (...classes) => classes.filter(Boolean).join(' ');
 
-// Spiral Vortex Logo SVG Component
-const SpiralVortexSVG = ({ className = '' }) => (
-  <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="spiralGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#10B981" />
-        <stop offset="100%" stopColor="#059669" />
-      </linearGradient>
-      <linearGradient id="spiralGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
-        <stop offset="0%" stopColor="#14B8A6" />
-        <stop offset="100%" stopColor="#10B981" />
-      </linearGradient>
-      <linearGradient id="spiralGrad3" x1="100%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#2DD4BF" />
-        <stop offset="100%" stopColor="#14B8A6" />
-      </linearGradient>
-      <linearGradient id="spiralGrad4" x1="100%" y1="100%" x2="0%" y2="0%">
-        <stop offset="0%" stopColor="#0D9488" />
-        <stop offset="100%" stopColor="#10B981" />
-      </linearGradient>
-      <linearGradient id="spiralGrad5" x1="50%" y1="0%" x2="50%" y2="100%">
-        <stop offset="0%" stopColor="#34D399" />
-        <stop offset="100%" stopColor="#059669" />
-      </linearGradient>
-    </defs>
-    {/* Blade 1 - Top */}
-    <path 
-      d="M50 8 C65 8, 78 18, 82 32 C78 28, 68 26, 55 30 C48 32, 44 38, 50 50 C42 42, 38 30, 50 8Z" 
-      fill="url(#spiralGrad1)"
-      className="spiral-blade"
-    />
-    {/* Blade 2 - Top Right */}
-    <path 
-      d="M82 32 C92 45, 92 62, 82 75 C80 68, 74 60, 65 55 C58 52, 52 52, 50 50 C60 48, 72 42, 82 32Z" 
-      fill="url(#spiralGrad2)"
-      className="spiral-blade"
-    />
-    {/* Blade 3 - Bottom Right */}
-    <path 
-      d="M82 75 C72 88, 55 94, 40 90 C48 86, 55 78, 55 68 C56 60, 52 54, 50 50 C58 56, 72 66, 82 75Z" 
-      fill="url(#spiralGrad3)"
-      className="spiral-blade"
-    />
-    {/* Blade 4 - Bottom Left */}
-    <path 
-      d="M40 90 C25 86, 12 72, 12 55 C18 62, 28 66, 40 64 C48 62, 50 56, 50 50 C48 60, 42 78, 40 90Z" 
-      fill="url(#spiralGrad4)"
-      className="spiral-blade"
-    />
-    {/* Blade 5 - Top Left */}
-    <path 
-      d="M12 55 C12 38, 24 22, 42 16 C38 24, 36 35, 42 45 C46 50, 48 50, 50 50 C42 48, 22 48, 12 55Z" 
-      fill="url(#spiralGrad5)"
-      className="spiral-blade"
-    />
-    {/* Center glow */}
-    <circle cx="50" cy="50" r="8" fill="url(#spiralGrad1)" opacity="0.6" />
-    <circle cx="50" cy="50" r="4" fill="#fff" opacity="0.8" />
-  </svg>
-);
-
-// Animated Logo Component - Spiral Vortex Design
+// Animated Logo Component - Shield with orbiting nodes
 const AnimatedLogo = ({ size = 'md', className = '' }) => {
   const sizes = {
     sm: 'w-8 h-8',
@@ -82,22 +44,43 @@ const AnimatedLogo = ({ size = 'md', className = '' }) => {
   };
 
   return (
-    <motion.div 
-      className={cn('relative', sizes[size], className)}
-      animate={{ rotate: 360 }}
-      transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-    >
-      <motion.div
-        animate={{ scale: [1, 1.05, 1] }}
+    <div className={cn('relative', sizes[size], className)}>
+      {/* Shield base */}
+      <motion.div 
+        className="absolute inset-0 flex items-center justify-center"
+        animate={{ scale: [1, 1.02, 1] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
       >
-        <SpiralVortexSVG className="w-full h-full" />
+        <Shield className="w-full h-full text-primary" strokeWidth={1.5} />
       </motion.div>
-    </motion.div>
+      
+      {/* Orbiting nodes */}
+      <motion.div 
+        className="absolute inset-0"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-2 h-2 rounded-full bg-accent" />
+      </motion.div>
+      <motion.div 
+        className="absolute inset-0"
+        animate={{ rotate: -360 }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+      >
+        <div className="absolute bottom-1 right-0 w-1.5 h-1.5 rounded-full bg-cyan-400" />
+      </motion.div>
+      <motion.div 
+        className="absolute inset-0"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+      >
+        <div className="absolute bottom-0 left-1 w-1.5 h-1.5 rounded-full bg-emerald-300" />
+      </motion.div>
+    </div>
   );
 };
 
-// Footer Logo - More artistic/ambient animation with spiral
+// Footer Logo - More artistic/ambient animation
 const FooterLogo = () => (
   <div className="relative w-32 h-32">
     {/* Outer glow rings */}
@@ -112,38 +95,26 @@ const FooterLogo = () => (
       transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
     />
     
-    {/* Central spiral logo - counter-rotating for effect */}
-    <motion.div 
-      className="absolute inset-0 flex items-center justify-center p-6"
-      animate={{ rotate: -360 }}
-      transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-    >
-      <motion.div
-        animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <SpiralVortexSVG className="w-full h-full" />
-      </motion.div>
-    </motion.div>
+    {/* Central shield */}
+    <div className="absolute inset-0 flex items-center justify-center">
+      <AnimatedLogo size="lg" />
+    </div>
     
     {/* Floating particles */}
-    {[...Array(8)].map((_, i) => (
+    {[...Array(6)].map((_, i) => (
       <motion.div
         key={i}
-        className="absolute w-1.5 h-1.5 rounded-full"
+        className="absolute w-1 h-1 rounded-full bg-accent/60"
         style={{
-          top: `${15 + Math.random() * 70}%`,
-          left: `${15 + Math.random() * 70}%`,
-          background: `linear-gradient(135deg, #10B981, #2DD4BF)`,
+          top: `${20 + Math.random() * 60}%`,
+          left: `${20 + Math.random() * 60}%`,
         }}
         animate={{
-          y: [0, -15, 0],
-          x: [0, Math.random() > 0.5 ? 5 : -5, 0],
-          opacity: [0.2, 0.8, 0.2],
-          scale: [0.8, 1.2, 0.8],
+          y: [0, -10, 0],
+          opacity: [0.3, 0.8, 0.3],
         }}
         transition={{
-          duration: 2.5 + Math.random() * 2,
+          duration: 2 + Math.random() * 2,
           repeat: Infinity,
           delay: Math.random() * 2,
         }}
@@ -370,14 +341,33 @@ function App() {
     e.preventDefault();
     if (!email || !email.includes('@')) {
       setEmailStatus('error');
+      trackEvent('email_subscription_error', { reason: 'invalid_email' });
       return;
     }
     setIsSubmitting(true);
-    // Simulate API call - in production, this would connect to your email service
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setEmailStatus('success');
+    
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      
+      if (response.ok) {
+        setEmailStatus('success');
+        trackEvent('email_subscription_success', { email });
+        setEmail('');
+      } else {
+        setEmailStatus('error');
+        trackEvent('email_subscription_error', { reason: 'api_error' });
+      }
+    } catch (error) {
+      setEmailStatus('error');
+      trackEvent('email_subscription_error', { reason: 'network_error' });
+    }
+    
     setIsSubmitting(false);
-    setEmail('');
     // Reset status after 5 seconds
     setTimeout(() => setEmailStatus(''), 5000);
   };
@@ -586,6 +576,7 @@ function App() {
                   rel="noopener noreferrer"
                   className="group flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:scale-105"
                   data-testid="hero-watch-demo"
+                  onClick={() => trackEvent('cta_clicked', { button: 'watch_demo', location: 'hero' })}
                 >
                   <Play className="w-5 h-5" />
                   <span>Watch Demo</span>
@@ -596,6 +587,7 @@ function App() {
                   rel="noopener noreferrer"
                   className="group flex items-center gap-2 px-6 py-3 rounded-full border border-border hover:border-primary/50 hover:bg-surface-highlight transition-all font-medium"
                   data-testid="hero-github-star"
+                  onClick={() => trackEvent('cta_clicked', { button: 'github_star', location: 'hero' })}
                 >
                   <Github className="w-5 h-5" />
                   <span>Star on GitHub</span>
@@ -901,6 +893,109 @@ risk_report = cg.analyze()
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Comparison Table Section */}
+      <Section id="comparison" className="py-24 md:py-32 bg-surface/50">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                How ChurnGuard AI <span className="text-gradient">Compares</span>
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                See how we stack up against traditional churn analytics tools and enterprise platforms.
+              </p>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-4 px-4 font-semibold text-muted-foreground">Feature</th>
+                    <th className="text-center py-4 px-4">
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="font-bold text-primary">ChurnGuard AI</span>
+                        <span className="text-xs text-muted-foreground">Open Source</span>
+                      </div>
+                    </th>
+                    <th className="text-center py-4 px-4">
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="font-semibold text-muted-foreground">Traditional Analytics</span>
+                        <span className="text-xs text-muted-foreground">Mixpanel, Amplitude</span>
+                      </div>
+                    </th>
+                    <th className="text-center py-4 px-4">
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="font-semibold text-muted-foreground">Enterprise Platforms</span>
+                        <span className="text-xs text-muted-foreground">ChurnZero, Gainsight</span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {[
+                    { feature: 'Price', churnguard: 'Free forever', traditional: '$1,000+/mo', enterprise: '$10,000+/mo' },
+                    { feature: 'Setup Time', churnguard: '15 minutes', traditional: '1-2 weeks', enterprise: '2-3 months' },
+                    { feature: 'Churn Prediction ML', churnguard: true, traditional: false, enterprise: true },
+                    { feature: 'SHAP Explainability', churnguard: true, traditional: false, enterprise: 'Limited' },
+                    { feature: 'LLM Intervention Plans', churnguard: true, traditional: false, enterprise: false },
+                    { feature: 'Revenue-at-Risk Scoring', churnguard: true, traditional: false, enterprise: true },
+                    { feature: 'Open Source', churnguard: true, traditional: false, enterprise: false },
+                    { feature: 'Self-Hosted Option', churnguard: true, traditional: false, enterprise: false },
+                    { feature: 'Data Ownership', churnguard: '100% yours', traditional: 'Vendor-hosted', enterprise: 'Vendor-hosted' },
+                    { feature: 'Stripe Integration', churnguard: true, traditional: 'Add-on', enterprise: true },
+                    { feature: 'Custom Model Training', churnguard: true, traditional: false, enterprise: 'Enterprise only' },
+                  ].map((row, i) => (
+                    <tr key={i} className="hover:bg-surface-highlight/50 transition-colors">
+                      <td className="py-4 px-4 font-medium">{row.feature}</td>
+                      <td className="py-4 px-4 text-center">
+                        {typeof row.churnguard === 'boolean' ? (
+                          row.churnguard ? (
+                            <Check className="w-5 h-5 text-primary mx-auto" />
+                          ) : (
+                            <X className="w-5 h-5 text-muted-foreground/50 mx-auto" />
+                          )
+                        ) : (
+                          <span className="text-primary font-medium">{row.churnguard}</span>
+                        )}
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        {typeof row.traditional === 'boolean' ? (
+                          row.traditional ? (
+                            <Check className="w-5 h-5 text-muted-foreground mx-auto" />
+                          ) : (
+                            <X className="w-5 h-5 text-muted-foreground/50 mx-auto" />
+                          )
+                        ) : (
+                          <span className="text-muted-foreground">{row.traditional}</span>
+                        )}
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        {typeof row.enterprise === 'boolean' ? (
+                          row.enterprise ? (
+                            <Check className="w-5 h-5 text-muted-foreground mx-auto" />
+                          ) : (
+                            <X className="w-5 h-5 text-muted-foreground/50 mx-auto" />
+                          )
+                        ) : (
+                          <span className="text-muted-foreground">{row.enterprise}</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="mt-8 p-4 rounded-xl bg-primary/10 border border-primary/20 text-center">
+              <p className="text-sm text-foreground">
+                <span className="font-semibold">Bottom line:</span> ChurnGuard AI gives you enterprise-grade churn prediction 
+                with complete transparency, for free. No sales calls required.
+              </p>
             </div>
           </div>
         </div>
