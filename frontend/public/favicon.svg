@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="orbitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2DD4BF"/>
+      <stop offset="100%" style="stop-color:#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield shape -->
+  <path d="M32 4L8 14v16c0 14 10.67 27.07 24 32 13.33-4.93 24-18 24-32V14L32 4z" 
+        fill="url(#shieldGrad)" opacity="0.9"/>
+  <!-- Inner highlight -->
+  <path d="M32 10L14 18v12c0 10.5 8 20.3 18 24 10-3.7 18-13.5 18-24V18L32 10z" 
+        fill="#020817" opacity="0.3"/>
+  <!-- Data nodes -->
+  <circle cx="32" cy="28" r="3" fill="#fff"/>
+  <circle cx="24" cy="38" r="2" fill="url(#orbitGrad)"/>
+  <circle cx="40" cy="38" r="2" fill="url(#orbitGrad)"/>
+  <circle cx="32" cy="46" r="2" fill="url(#orbitGrad)"/>
+  <!-- Connections -->
+  <line x1="32" y1="28" x2="24" y2="38" stroke="#2DD4BF" stroke-width="1" opacity="0.6"/>
+  <line x1="32" y1="28" x2="40" y2="38" stroke="#2DD4BF" stroke-width="1" opacity="0.6"/>
+  <line x1="24" y1="38" x2="32" y2="46" stroke="#2DD4BF" stroke-width="1" opacity="0.6"/>
+  <line x1="40" y1="38" x2="32" y2="46" stroke="#2DD4BF" stroke-width="1" opacity="0.6"/>
+</svg>
