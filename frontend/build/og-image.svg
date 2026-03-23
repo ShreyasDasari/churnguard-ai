@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020817"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  
+  <!-- Grid pattern -->
+  <g opacity="0.03">
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" stroke-width="1"/>
+    </pattern>
+    <rect width="1200" height="630" fill="url(#grid)"/>
+  </g>
+  
+  <!-- Glow effects -->
+  <circle cx="200" cy="315" r="300" fill="#10B981" opacity="0.05" filter="blur(100px)"/>
+  <circle cx="1000" cy="315" r="250" fill="#14B8A6" opacity="0.05" filter="blur(80px)"/>
+  
+  <!-- Shield Logo -->
+  <g transform="translate(100, 215)">
+    <path d="M100 0L0 40v64c0 56 42.68 108.28 96 128 53.32-19.72 96-72 96-128V40L100 0z" 
+          fill="url(#shieldGrad)" opacity="0.9"/>
+    <path d="M100 24L24 56v48c0 42 32 81.2 72 96 40-14.8 72-54 72-96V56L100 24z" 
+          fill="#020817" opacity="0.3"/>
+    <!-- Data nodes -->
+    <circle cx="100" cy="88" r="12" fill="#fff"/>
+    <circle cx="68" cy="128" r="8" fill="#2DD4BF"/>
+    <circle cx="132" cy="128" r="8" fill="#2DD4BF"/>
+    <circle cx="100" cy="160" r="8" fill="#2DD4BF"/>
+    <!-- Connections -->
+    <line x1="100" y1="88" x2="68" y2="128" stroke="#2DD4BF" stroke-width="2" opacity="0.6"/>
+    <line x1="100" y1="88" x2="132" y2="128" stroke="#2DD4BF" stroke-width="2" opacity="0.6"/>
+    <line x1="68" y1="128" x2="100" y2="160" stroke="#2DD4BF" stroke-width="2" opacity="0.6"/>
+    <line x1="132" y1="128" x2="100" y2="160" stroke="#2DD4BF" stroke-width="2" opacity="0.6"/>
+  </g>
+  
+  <!-- Text Content -->
+  <text x="340" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" fill="#F8FAFC">
+    ChurnGuard AI
+  </text>
+  
+  <text x="340" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="600" fill="url(#textGrad)">
+    Predict Churn Before It Happens
+  </text>
+  
+  <text x="340" y="400" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#94A3B8">
+    Free, open-source churn prediction for SaaS.
+  </text>
+  <text x="340" y="435" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#94A3B8">
+    SHAP explainability • LLM intervention plans • 15-min setup
+  </text>
+  
+  <!-- Feature badges -->
+  <g transform="translate(340, 480)">
+    <rect x="0" y="0" width="140" height="36" rx="18" fill="#10B981" opacity="0.2"/>
+    <text x="70" y="24" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#10B981" text-anchor="middle">Free Forever</text>
+    
+    <rect x="160" y="0" width="140" height="36" rx="18" fill="#14B8A6" opacity="0.2"/>
+    <text x="230" y="24" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#14B8A6" text-anchor="middle">Open Source</text>
+    
+    <rect x="320" y="0" width="140" height="36" rx="18" fill="#06B6D4" opacity="0.2"/>
+    <text x="390" y="24" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#06B6D4" text-anchor="middle">MIT License</text>
+  </g>
+  
+  <!-- GitHub star hint -->
+  <g transform="translate(340, 550)">
+    <text font-family="system-ui, sans-serif" font-size="18" fill="#64748B">
+      ⭐ github.com/ShreyasDasari/churnguard-ai
+    </text>
+  </g>
+</svg>

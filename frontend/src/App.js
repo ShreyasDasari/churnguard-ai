@@ -383,6 +383,28 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
+  // Track scroll depth for conversion analytics
+  useEffect(() => {
+    const scrollDepths = [25, 50, 75, 100];
+    const trackedDepths = new Set();
+    
+    const trackScrollDepth = () => {
+      const scrollPercent = Math.round(
+        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+      );
+      
+      scrollDepths.forEach(depth => {
+        if (scrollPercent >= depth && !trackedDepths.has(depth)) {
+          trackedDepths.add(depth);
+          trackEvent('scroll_depth_reached', { depth_percent: depth });
+        }
+      });
+    };
+    
+    window.addEventListener('scroll', trackScrollDepth, { passive: true });
+    return () => window.removeEventListener('scroll', trackScrollDepth);
+  }, []);
+  
   useEffect(() => {
     document.documentElement.className = isDark ? '' : 'light';
   }, [isDark]);
@@ -459,7 +481,10 @@ function App() {
             <div className="flex items-center gap-3">
               {/* Theme toggle */}
               <button
-                onClick={() => setIsDark(!isDark)}
+                onClick={() => {
+                  setIsDark(!isDark);
+                  trackEvent('theme_toggled', { new_theme: isDark ? 'light' : 'dark' });
+                }}
                 className="p-2 rounded-full hover:bg-surface-highlight transition-colors"
                 aria-label="Toggle theme"
                 data-testid="theme-toggle"
@@ -474,6 +499,7 @@ function App() {
                 rel="noopener noreferrer"
                 className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-surface-highlight hover:bg-muted border border-border hover:border-primary/50 transition-all text-sm font-medium"
                 data-testid="navbar-github-star"
+                onClick={() => trackEvent('github_star_clicked', { location: 'navbar' })}
               >
                 <Star className="w-4 h-4 text-amber-400" />
                 <span>Star on GitHub</span>
@@ -1045,6 +1071,7 @@ risk_report = cg.analyze()
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:scale-105"
                 data-testid="opensource-github-star"
+                onClick={() => trackEvent('github_star_clicked', { location: 'opensource_section' })}
               >
                 <Star className="w-5 h-5" />
                 <span>Star on GitHub</span>
@@ -1054,6 +1081,7 @@ risk_report = cg.analyze()
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-6 py-3 rounded-full border border-border hover:border-primary/50 hover:bg-surface-highlight transition-all font-medium"
+                onClick={() => trackEvent('colab_opened', { location: 'opensource_section' })}
               >
                 <ExternalLink className="w-5 h-5" />
                 <span>Open in Colab</span>
@@ -1178,6 +1206,7 @@ risk_report = cg.analyze()
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-semibold text-lg shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:scale-105"
                 data-testid="final-cta-github"
+                onClick={() => trackEvent('github_star_clicked', { location: 'final_cta' })}
               >
                 <Star className="w-5 h-5" />
                 <span>Star on GitHub</span>
@@ -1188,6 +1217,7 @@ risk_report = cg.analyze()
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2 px-8 py-4 rounded-full border border-border hover:border-primary/50 hover:bg-surface-highlight transition-all font-semibold text-lg"
                 data-testid="final-cta-demo"
+                onClick={() => trackEvent('demo_watched', { location: 'final_cta' })}
               >
                 <Play className="w-5 h-5" />
                 <span>Watch Demo</span>

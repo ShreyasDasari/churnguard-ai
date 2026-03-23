@@ -102,10 +102,34 @@ All critical features implemented and tested.
 - [ ] Add accessibility audit (WCAG AA compliance)
 
 ## Next Tasks
-1. Verify domain in Resend dashboard for production emails
-2. Create PostHog dashboards to track GitHub star conversions
-3. Add OG images for better social sharing
+1. **Verify domain in Resend** - Go to https://resend.com/domains and add your domain to enable production emails
+2. **Set up PostHog dashboards** - Events to track:
+   - `github_star_clicked` (by location: navbar, hero, opensource_section, final_cta)
+   - `demo_watched` (by location: hero, final_cta)
+   - `email_subscription_success`
+   - `scroll_depth_reached` (25%, 50%, 75%, 100%)
+   - `theme_toggled`
+   - `colab_opened`
+3. Create funnels in PostHog: `pageview` → `scroll_depth_50` → `github_star_clicked`
 4. Monitor analytics and optimize based on user behavior
+
+## Resend Domain Verification Steps
+1. Go to https://resend.com/domains
+2. Click "Add Domain"
+3. Enter your domain (e.g., churnguard.ai)
+4. Add the DNS records Resend provides (MX, TXT records)
+5. Wait for verification (usually 5-10 minutes)
+6. Update SENDER_EMAIL in /app/backend/.env to use your domain (e.g., updates@churnguard.ai)
+
+## PostHog Dashboard Setup
+1. Go to https://us.posthog.com (or your PostHog instance)
+2. Create a new dashboard "ChurnGuard Conversions"
+3. Add insights:
+   - **GitHub Clicks by Location**: Bar chart of `github_star_clicked` grouped by `location`
+   - **Scroll Depth Funnel**: Funnel from 25% → 50% → 75% → 100%
+   - **Email Subscriptions**: Trend of `email_subscription_success` events
+   - **Demo Views**: Count of `demo_watched` events
+   - **Theme Preference**: Pie chart of `theme_toggled` by `new_theme`
 
 ## Links
 - **GitHub**: https://github.com/ShreyasDasari/churnguard-ai
