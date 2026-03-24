@@ -1,5 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm --filter ./frontend run build",
-  "outputDirectory": "frontend/build"
+  "buildCommand": "pnpm -C frontend run build",
+  "outputDirectory": "frontend/build",
+  "installCommand": "pnpm install"
 }
