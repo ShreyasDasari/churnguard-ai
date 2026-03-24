@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import posthog from 'posthog-js';
 import { 
-  Shield, Activity, Database, Zap, GitBranch, Users, Search, 
-  BarChart3, Target, Brain, Lightbulb, Clock, Star, ExternalLink,
-  ChevronRight, Sun, Moon, Menu, X, ArrowRight, Check, Play,
-  TrendingDown, AlertTriangle, DollarSign, FileText, Upload,
-  Layers, LineChart, Sparkles, Github, Mail, Send
+  Shield, Database, Zap, GitBranch, Search, 
+  Target, Brain, Lightbulb, Star, ExternalLink,
+  Sun, Moon, Menu, X, ArrowRight, Check, Play,
+  TrendingDown, AlertTriangle, DollarSign, FileText,
+  Layers, Github, Mail, Send
 } from 'lucide-react';
 
 // Initialize PostHog
@@ -85,46 +85,10 @@ const AnimatedLogo = ({ size = 'md', className = '' }) => {
   );
 };
 
-// Footer Logo - More artistic/ambient animation
+// Footer Logo - Static display
 const FooterLogo = () => (
-  <div className="relative w-32 h-32">
-    {/* Outer glow rings */}
-    <motion.div 
-      className="absolute inset-0 rounded-full border border-primary/20"
-      animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.1, 0.3] }}
-      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-    />
-    <motion.div 
-      className="absolute inset-4 rounded-full border border-accent/30"
-      animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.15, 0.4] }}
-      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-    />
-    
-    {/* Central shield */}
-    <div className="absolute inset-0 flex items-center justify-center">
-      <AnimatedLogo size="lg" />
-    </div>
-    
-    {/* Floating particles */}
-    {[...Array(6)].map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute w-1 h-1 rounded-full bg-accent/60"
-        style={{
-          top: `${20 + Math.random() * 60}%`,
-          left: `${20 + Math.random() * 60}%`,
-        }}
-        animate={{
-          y: [0, -10, 0],
-          opacity: [0.3, 0.8, 0.3],
-        }}
-        transition={{
-          duration: 2 + Math.random() * 2,
-          repeat: Infinity,
-          delay: Math.random() * 2,
-        }}
-      />
-    ))}
+  <div className="relative w-32 h-32 flex items-center justify-center">
+    <AnimatedLogo size="lg" />
   </div>
 );
 
@@ -459,10 +423,10 @@ function App() {
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="#" className="flex items-center gap-3">
+            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <AnimatedLogo size="sm" />
               <span className="text-xl font-bold text-foreground">ChurnGuard AI</span>
-            </a>
+            </button>
             
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-8">
