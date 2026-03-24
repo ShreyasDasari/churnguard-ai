@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import posthog from 'posthog-js';
 import { 
-  Shield, Activity, Database, Zap, GitBranch, Users, Search, 
-  BarChart3, Target, Brain, Lightbulb, Clock, Star, ExternalLink,
-  ChevronRight, Sun, Moon, Menu, X, ArrowRight, Check, Play,
-  TrendingDown, AlertTriangle, DollarSign, FileText, Upload,
-  Layers, LineChart, Sparkles, Github, Mail, Send
+  Shield, Database, Zap, GitBranch, Search, 
+  Target, Brain, Lightbulb, Star, ExternalLink,
+  Sun, Moon, Menu, X, ArrowRight, Check, Play,
+  TrendingDown, AlertTriangle, DollarSign, FileText,
+  Layers, Github, Mail, Send
 } from 'lucide-react';
 
 // Initialize PostHog
@@ -423,10 +423,10 @@ function App() {
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="#" className="flex items-center gap-3">
+            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <AnimatedLogo size="sm" />
               <span className="text-xl font-bold text-foreground">ChurnGuard AI</span>
-            </a>
+            </button>
             
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-8">
