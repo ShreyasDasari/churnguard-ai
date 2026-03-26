@@ -74,7 +74,7 @@ Build a highly polished, production-ready landing page website for "ChurnGuard A
 - MONGO_URL=mongodb://localhost:27017
 - DB_NAME=churnguard_landing
 - RESEND_API_KEY=re_HJuM5F3g_4kggvxU7BLD3eTovtpwTcMda
-- SENDER_EMAIL=onboarding@resend.dev
+- SENDER_EMAIL=noreply@contact.churnguard-ai.xyz
 
 ### Frontend
 - PostHog Key: phx_yugE8Duov8gJYm3k3w19xuicNmG2xrdVL7op8XWP0QzsBHS
