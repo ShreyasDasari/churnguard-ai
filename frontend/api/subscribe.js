@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   try {
     // Send welcome email
     await resend.emails.send({
-      from: 'ChurnGuard AI <onboarding@resend.dev>',
+      from: 'ChurnGuard AI <noreply@contact.churnguard-ai.xyz>',
       to: email,
       subject: 'Welcome to ChurnGuard AI Updates!',
       html: `
